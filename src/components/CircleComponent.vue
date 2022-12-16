@@ -1,74 +1,100 @@
 <template>
-  <button
-      :class="computedClasses"
-      @mousedown.stop
-      @click.stop="onClick"
-      class="circle">
-  </button>
+  <div @mouseleave.stop="onMouseLeave" @mousedown.stop="onMouseDown" @mouseup="onMouseUp" :class="computedClasses" class="circle"/>
 </template>
 
-<script>
-import {defineComponent} from "vue";
-import {activeButtons, setActiveButtons} from "@/composables/circles";
+<script lang="ts">
+import {defineComponent,PropType} from "vue";
+import {ICircle} from "@/models/Circle";
 
 export default defineComponent({
+  props: {
+    item: {
+      required: true,
+      type: Object as PropType<ICircle>
+    },
 
-  name: 'CircleComponent',
-  props: ['item'],
+    childIds: {
+      required: true,
+      type: Array as PropType<string[]>
+    }
+  },
+
+  inject: ['activeCircles', 'handleCircleMouseDown', 'handleCircleMouseUp', 'handleCircleMouseOut', 'removeActiveCircle'],
 
   data() {
     return {
-      connectedLinesIndexes: [],
-      isActive: false,
+    }
+  },
+
+  mounted() {
+  },
+
+  watch: {
+  },
+
+  methods: {
+    onMouseDown(): void {
+      // if(this.activeCirclesState.length === 1
+      //   && this.activeCirclesState[0].uuid === this.item.uuid
+      // ) {
+      //   (this.removeActiveCircle as any)(this.item.uuid)
+      //   return
+      // }
+      //
+      // if(this.activeCirclesState.length === 1
+      //   && this.activeCirclesState[0].uuid !== this.item.uuid
+      //   && this.childIds.find(el => el === this.activeCirclesState[0].uuid)
+      // ) {
+      //   return
+      // }
+      //
+      // let {x, y, height, width}: {x: number, y: number, height: number, width: number} = this.$el.getBoundingClientRect()
+      //
+      // x = x + (width / 2);
+      // y = y + (height / 2);
+      //
+      // (this.handleCircleMouseDown as any)({...this.item, x: x, y: y})
+    },
+
+    onMouseUp(): void {
+      // (this.handleCircleMouseUp as any)()
+    },
+
+    onMouseLeave(): void {
+      // (this.handleCircleMouseOut as any)(this.item.uuid)
     }
   },
 
   computed: {
-    computedClasses() {
-      const classes = []
-      this.isButtonActive ? classes.push('active') : ''
-      classes.push(this.item.position)
-      return classes
-    },
-
-    isButtonActive() {
-      return activeButtons.value.find((el) => el.buttonId === this.item.id)
-    },
+    // computedClasses(): string[] {
+    //   return [this.item.position, this.isActive ? 'active' : '']
+    // },
+    //
+    // activeCirclesState() {
+    //   return (this.activeCircles as any)()
+    // },
+    //
+    // isActive(): boolean {
+    //   return this.activeCirclesState.find((el: ICircle) => el.uuid === this.item.uuid)
+    // },
   },
-
-  methods: {
-    onClick(e) {
-      const {x,y} = e.target.getBoundingClientRect()
-      setActiveButtons(this.item.id, x + 10, y + 10)
-    },
-
-  }
-
-
 })
-
 </script>
 
-<style>
-.active {
-  background-color: burlywood;
-}
+<style scoped>
 
 .circle {
   height: 20px;
   width: 20px;
-  border-radius: 10px;
   position: absolute;
-}
-
-.bottom {
-  left: 25px;
-  top: 60px;
+  background-color: green;
+  border-radius: 3px;
+  border: 1px solid black;
 }
 
 .top {
   left: 25px;
-  top: -10px;
+  top: -10px
 }
 
 .right {
@@ -76,8 +102,17 @@ export default defineComponent({
   top: 25px;
 }
 
+.bottom {
+  left: 25px;
+  top: 60px;
+}
+
 .left {
   left: -10px;
   top: 25px;
+}
+
+.active {
+  background-color: red;
 }
 </style>

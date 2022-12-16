@@ -1,63 +1,51 @@
 <template>
-  <div @mousedown="onMouseDown($event)" class="square">
-    <CircleComponent :item="item" v-for="item in arr" :key="item.id"></CircleComponent>
+  <div ref="square" @mouseup="onMouseUp" @mousedown="onMouseDown($event)" @drag="onDrag" class="square">
+    <CircleComponent
+        v-for="child in childrens"
+        :key="child.id"
+    />
   </div>
 </template>
 
-<script lang="ts">
-import { uuid } from 'vue-uuid';
-import {defineComponent} from "vue";
+<script lang="ts" setup>
+import {Square} from "@/models/Square";
 import CircleComponent from "@/components/CircleComponent.vue";
-export default defineComponent({
-  name: 'SquareComponent',
-  components: {CircleComponent},
+import {ref, defineProps, PropType, onMounted} from "vue";
 
-  data() {
-    return {
-      arr: [
-        {
-          position: 'top',
-          id: uuid.v4()
-        },
-        {
-          position: 'right',
-          id: uuid.v4()
-        },
-        {
-          position: 'bottom',
-          id: uuid.v4()
-        },
-        {
-          position: 'left',
-          id: uuid.v4()
-        },
-      ]
-    }
-  },
-
-  methods: {
-    onMouseDown(e: MouseEvent) {
-      const ball = this.$el
-
-      function moveAt(e: MouseEvent) {
-        ball.style.left = e.pageX - ball.offsetWidth / 2 + 'px';
-        ball.style.top = e.pageY - ball.offsetHeight / 2 + 'px';
-      }
-
-      moveAt(e);
-
-      document.onmousemove = function(e) {
-        moveAt(e);
-      }
-
-      ball.onmouseup = function() {
-        document.onmousemove = null;
-        ball.onmouseup = null;
-      }
-    }
+const props = defineProps({
+  item: {
+    type: Object as PropType<Square>,
+    required: true,
   }
 })
+
+onMounted(() => {
+  props.item?.createCircles()
+})
+
+const square = ref()
+
+const onMouseMove = (e: MouseEvent) => {
+  moveAt(e);
+}
+
+const onMouseDown = (e: MouseEvent) => {
+  moveAt(e);
+  document.addEventListener('mousemove', onMouseMove)
+}
+
+const onMouseUp = () => {
+  document.removeEventListener('mousemove', onMouseMove)
+}
+
+const moveAt = (e: MouseEvent) => {
+  square.value.style.left = e.pageX - square.value?.offsetWidth / 2 + 'px';
+  square.value.style.top = e.pageY - square.value.offsetHeight / 2 + 'px';
+}
+
 </script>
+
+
 
 <style>
 .square {
