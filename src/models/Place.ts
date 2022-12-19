@@ -12,7 +12,7 @@ export interface IPlace {
     activeCircles: ICircle[];
     createSquares(): void;
     setActiveCircles(): void;
-    createLine(circle: ICircle, lineIndex: string): ILine | undefined;
+    // createLine(circle: ICircle, lineIndex: string): ILine | undefined;
     lineIndex: null | string
 }
 
@@ -44,23 +44,23 @@ export class Place implements IPlace {
         this.squares.push(newSquare)
     }
 
-    public createLine(circle: ICircle, lineIndex: string): ILine | undefined{
-        if(lineIndex === null) {
-            this.lineIndex = lineIndex
-            const newLine = new Line(uuid.v4(), circle.x, circle.y, null, null, circle.id, null)
-            this.lines.push(newLine)
-            return newLine
-        } else {
-            const line = this.lines.find((el) => {
-                return el.id === this.lineIndex
-            })
-            if(line) {
-                line.x2 = circle.x
-                line.y2 = circle.y
-                line.endCoordinateParentId = circle.id
-            }
-            this.lineIndex = null
-            return line
-        }
-    }
+    // public createLine(circle: ICircle, lineIndex: string): ILine | undefined{
+        // if(lineIndex === null) {
+        //     this.lineIndex = lineIndex
+        //     const newLine = new Line(uuid.v4(), circle.x, circle.y, null, null, circle.id, null)
+        //     this.lines.push(newLine)
+        //     return newLine
+        // } else {
+        //     const line = this.lines.find((el) => {
+        //         return el.id === this.lineIndex
+        //     })
+        //     if(line) {
+        //         line.x2 = circle.x
+        //         line.y2 = circle.y
+        //         line.endCoordinateParentId = circle.id
+        //     }
+        //     this.lineIndex = null
+        //     return line
+        // }
+    // }
 }

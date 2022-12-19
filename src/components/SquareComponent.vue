@@ -1,8 +1,11 @@
 <template>
-  <div ref="square" @mouseup="onMouseUp" @mousedown="onMouseDown($event)" @drag="onDrag" class="square">
+  <div ref="square" :style="{left: positions.x + 'px', top: positions.y + 'px'}" @mouseup="onMouseUp" @mousedown="onMouseDown($event)" @drag="onDrag" class="square">
     <CircleComponent
-        v-for="child in childrens"
-        :key="child.id"
+        v-for="item in item.circles"
+        :key="item.id"
+        :item="item"
+        :positions="positions"
+        :squareSize="squareSize"
     />
   </div>
 </template>
@@ -10,7 +13,13 @@
 <script lang="ts" setup>
 import {Square} from "@/models/Square";
 import CircleComponent from "@/components/CircleComponent.vue";
-import {ref, defineProps, PropType, onMounted} from "vue";
+import {ref, defineProps, PropType, onMounted, reactive, computed} from "vue";
+import {Positions,SquareSize} from "@/models/Square";
+
+const positions = reactive<Positions>({
+  x: 0,
+  y: 0,
+})
 
 const props = defineProps({
   item: {
@@ -21,26 +30,32 @@ const props = defineProps({
 
 onMounted(() => {
   props.item?.createCircles()
+  positions.x = props.item.x
+  positions.y = props.item.y
+})
+
+const squareSize = computed((): SquareSize => {
+  return {
+    height: props.item?.height,
+    width: props.item?.width,
+  }
 })
 
 const square = ref()
-
-const onMouseMove = (e: MouseEvent) => {
+const onMouseMove = (e: MouseEvent): void => {
   moveAt(e);
 }
-
-const onMouseDown = (e: MouseEvent) => {
+const onMouseDown = (e: MouseEvent): void => {
   moveAt(e);
   document.addEventListener('mousemove', onMouseMove)
 }
-
-const onMouseUp = () => {
+const onMouseUp = (): void => {
   document.removeEventListener('mousemove', onMouseMove)
 }
-
-const moveAt = (e: MouseEvent) => {
-  square.value.style.left = e.pageX - square.value?.offsetWidth / 2 + 'px';
-  square.value.style.top = e.pageY - square.value.offsetHeight / 2 + 'px';
+const moveAt = (e: MouseEvent): void => {
+  console.log(e)
+  positions.x = e.pageX - square.value?.offsetWidth / 2
+  positions.y = e.pageY - square.value.offsetHeight / 2
 }
 
 </script>
@@ -54,7 +69,6 @@ const moveAt = (e: MouseEvent) => {
   width: 70px;
   height: 70px;
   background-color: cornflowerblue;
-  border: 1px solid black;
   border-radius: 10px;
 }
 </style>
