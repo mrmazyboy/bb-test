@@ -1,12 +1,12 @@
 import {uuid} from "vue-uuid";
 
 export interface ICircle {
-    id: string | null;
+    id: string;
     position: string;
 }
 
 export class Circle implements ICircle{
-    readonly id: string | null = null
+    readonly id: string = ''
     constructor(
         readonly position: string,
     ) {

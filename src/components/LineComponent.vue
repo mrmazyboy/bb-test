@@ -1,5 +1,5 @@
 <template>
-  <line v-if="coordinates.x2" :x1="coordinates.x1" :y1="coordinates.y1" :x2="coordinates.x2" :y2="coordinates.y2" stroke="black" stroke-width="0.1" />
+  <line v-if="coordinates.x2" :x1="coordinates.x1" :y1="coordinates.y1" :x2="coordinates.x2" :y2="coordinates.y2" stroke="#5F8D4E" :stroke-width="0.1" />
 </template>
 
 <script lang="ts" setup>
@@ -15,7 +15,6 @@ const props = defineProps({
   }
 })
 
-
 const windowWidth: number = window.innerWidth
 const windowHeight: number = document.getElementsByTagName('body')[0].offsetHeight
 const coordinates = computed((): {x1: number, y1: number, x2: number, y2: number} => {
@@ -28,6 +27,4 @@ const coordinates = computed((): {x1: number, y1: number, x2: number, y2: number
     y2: y2 / windowHeight * 100,
   }
 })
-
-console.log(coordinates)
 </script>

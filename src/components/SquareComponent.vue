@@ -6,6 +6,8 @@
         :item="item"
         :positions="positions"
         :squareSize="squareSize"
+        :activeCircles="activeCircles"
+        :isNeighboringCircleIsActive="isNeighboringCircleIsActive"
     />
   </div>
 </template>
@@ -25,6 +27,10 @@ const props = defineProps({
   item: {
     type: Object as PropType<Square>,
     required: true,
+  },
+  activeCircles: {
+    type: Array as PropType<string[]>,
+    required: true,
   }
 })
 
@@ -32,6 +38,10 @@ onMounted(() => {
   props.item?.createCircles()
   positions.x = props.item.x
   positions.y = props.item.y
+})
+
+const isNeighboringCircleIsActive = computed(() => {
+  return !!props.item?.circles.find((circle) => props.activeCircles.find((el) => circle.id === el))
 })
 
 const squareSize = computed((): SquareSize => {
@@ -53,7 +63,6 @@ const onMouseUp = (): void => {
   document.removeEventListener('mousemove', onMouseMove)
 }
 const moveAt = (e: MouseEvent): void => {
-  console.log(e)
   positions.x = e.pageX - square.value?.offsetWidth / 2
   positions.y = e.pageY - square.value.offsetHeight / 2
 }
@@ -68,7 +77,8 @@ const moveAt = (e: MouseEvent): void => {
   position: absolute;
   width: 70px;
   height: 70px;
-  background-color: cornflowerblue;
+  background-color: #E5D9B6;
   border-radius: 10px;
+  border: 1px solid #285430;
 }
 </style>

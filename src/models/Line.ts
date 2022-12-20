@@ -6,13 +6,6 @@ export interface ILine {
     y1: number | null;
     x2: number | null;
     y2: number | null;
-    // startParentId: string | null,
-    // endParentId: string | null,
-
-    // startCoordinateParentId: string | null;
-    // endCoordinateParentId: string | null;
-    // updateStartCoordinates(x: number, y: number): void;
-    // updateEndCoordinates(x: number, y: number): void;
 }
 
 export class Line implements ILine {
@@ -22,18 +15,6 @@ export class Line implements ILine {
         public y1: number | null,
         public x2: number | null,
         public y2: number | null,
-        // public startParentId: string | null,
-        // public endParentId: string | null,
-        // public startCoordinateParentId: string | null,
-        // public endCoordinateParentId: string | null,
     ) {
     }
-    // public updateStartCoordinates(x: number, y: number) {
-    //     this.x1 = x
-    //     this.y1 = y
-    // }
-    // public updateEndCoordinates(x: number, y: number) {
-    //     this.x2 = x
-    //     this.y2 = y
-    // }
 }

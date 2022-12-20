@@ -1,5 +1,5 @@
 <template>
-  <div :style="position" ref="circle" @mouseleave.stop="onMouseLeave" @mousedown.stop="onMouseDown" @mouseup="onMouseUp" class="circle"/>
+  <div  :class="{active: isActive}" :style="position" ref="circle" @mouseleave.stop="onMouseLeave" @mousedown.stop="onMouseDown" @mouseup="onMouseUp" class="circle"/>
 </template>
 
 <script lang="ts" setup>
@@ -9,23 +9,33 @@ import {Positions,SquareSize} from "@/models/Square";
 import {ILine} from "@/models/Line";
 
 // eslint-disable-next-line no-unused-vars
-const setActiveCircle = inject('setActiveCircle', (x: number , y: number): any => {})
+const setActiveCircle = inject('setActiveCircle', (x: number , y: number, id: string): any => {})
 
 const props = defineProps({
   item: {
     type: Object as PropType<Circle>,
     required: true,
   },
-
   positions: {
     type: Object as PropType<Positions>,
     required: true
   },
-
   squareSize: {
     type: Object as PropType<SquareSize>,
     required: true
+  },
+  activeCircles: {
+    type: Array as PropType<string[]>,
+    required: true,
+  },
+  isNeighboringCircleIsActive: {
+    type: Boolean,
+    required: true,
   }
+})
+
+const isActive = computed((): boolean => {
+  return props.activeCircles.includes(props.item.id)
 })
 
 const circle = ref()
@@ -80,9 +90,13 @@ const linesStartForward = ref<ILine[]>([])
 const linesEndForward = ref<ILine[]>([])
 
 const onMouseDown = () => {
+  if(props.isNeighboringCircleIsActive && props.activeCircles.find(id => props.item.id !== id)) {
+    alert('НЕЗЯ ТАК ДЕЛАТЬ!=)')
+    return
+  }
 
   const {x,y, height, width} = circle.value.getBoundingClientRect()
-  const line = setActiveCircle( width / 2 + x, height / 2 + y)
+  const line = setActiveCircle( width / 2 + x, height / 2 + y, props.item.id)
 
   if(line?.x2 === null) {
     linesStartForward.value.push(line)
@@ -92,11 +106,7 @@ const onMouseDown = () => {
 }
 
 const onMouseLeave = () => {
-  console.log('leave')
-}
 
-const onMouseUp = () => {
-  console.log('up')
 }
 
 watch(props.positions, () => {
@@ -112,56 +122,6 @@ watch(props.positions, () => {
     el.y2 = height / 2 + y
   })
 })
-
-
-
-  // methods: {
-  //   onMouseDown(): void {
-      // if(this.activeCirclesState.length === 1
-      //   && this.activeCirclesState[0].uuid === this.item.uuid
-      // ) {
-      //   (this.removeActiveCircle as any)(this.item.uuid)
-      //   return
-      // }
-      //
-      // if(this.activeCirclesState.length === 1
-      //   && this.activeCirclesState[0].uuid !== this.item.uuid
-      //   && this.childIds.find(el => el === this.activeCirclesState[0].uuid)
-      // ) {
-      //   return
-      // }
-      //
-      // let {x, y, height, width}: {x: number, y: number, height: number, width: number} = this.$el.getBoundingClientRect()
-      //
-      // x = x + (width / 2);
-      // y = y + (height / 2);
-      //
-      // (this.handleCircleMouseDown as any)({...this.item, x: x, y: y})
-    // },
-  //
-  //   onMouseUp(): void {
-  //     // (this.handleCircleMouseUp as any)()
-  //   },
-  //
-  //   onMouseLeave(): void {
-  //     // (this.handleCircleMouseOut as any)(this.item.uuid)
-  //   }
-  // },
-
-  // computed: {
-    // computedClasses(): string[] {
-    //   return [this.item.position, this.isActive ? 'active' : '']
-    // },
-    //
-    // activeCirclesState() {
-    //   return (this.activeCircles as any)()
-    // },
-    //
-    // isActive(): boolean {
-    //   return this.activeCirclesState.find((el: ICircle) => el.uuid === this.item.uuid)
-    // },
-  // },
-// })
 </script>
 
 <style scoped>
@@ -170,8 +130,9 @@ watch(props.positions, () => {
   height: 20px;
   width: 20px;
   position: absolute;
-  background-color: green;
+  background-color: #A4BE7B;
   border-radius: 3px;
+  border: 1px solid #285430;
 }
 
 .top {
@@ -195,6 +156,6 @@ watch(props.positions, () => {
 }
 
 .active {
-  background-color: red;
+  background-color: #285430;
 }
 </style>
